@@ -53,7 +53,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PostQuitMessage(0);
             break;
         case WM_PAINT:
-            ShowMyText(hWnd);
+            {
+                PAINTSTRUCT ps;
+                BeginPaint(hWnd, &ps);
+
+                // Obtain the size of the drawing area.
+                RECT rc;
+                GetClientRect(
+                    hWnd,
+                    &rc
+                );          
+
+                // Save the original object
+                HGDIOBJ original = NULL;
+                original = SelectObject(
+                    ps.hdc,
+                    GetStockObject(DC_PEN)
+                );
+
+                // Create a pen.            
+                HPEN blackPen = CreatePen(PS_SOLID, 3, 0);
+
+                // Select the pen.
+                SelectObject(ps.hdc, blackPen);
+
+                // Draw a rectangle.
+                Rectangle(
+                    ps.hdc, 
+                    rc.left + 100, 
+                    rc.top + 100, 
+                    rc.right - 100, 
+                    rc.bottom - 100);   
+
+                DeleteObject(blackPen);
+
+                // Restore the original object
+                SelectObject(ps.hdc, original);
+
+                EndPaint(hWnd, &ps);
+            }
             break;
         default:
             return(DefWindowProc(hWnd, msg, wParam, lParam));
