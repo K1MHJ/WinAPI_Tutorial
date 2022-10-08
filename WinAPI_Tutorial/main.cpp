@@ -2,6 +2,7 @@
 
 #include <windows.h>
 
+void ShowMyText(HWND);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 char szClassNme[] = "WindowClass";
 
@@ -51,8 +52,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
+        case WM_PAINT:
+            ShowMyText(hWnd);
+            break;
         default:
             return(DefWindowProc(hWnd, msg, wParam, lParam));
     }
     return (0L);
+}
+
+void ShowMyText(HWND hWnd)
+{
+    HDC hdc;
+    PAINTSTRUCT paint;
+    const char *str = "hello"; 
+
+    hdc = BeginPaint(hWnd, &paint);
+    TextOut(hdc, 10, 10, (LPCSTR)str, strlen(str));
+    EndPaint(hWnd, &paint);
+    return;
 }
